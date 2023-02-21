@@ -1,0 +1,31 @@
+name: "Social Impact Data Commons"
+output_dir: "../../docs"
+exclude: ["*.nb.html", "*.csv", "*.CSV", "*.dcf", "parlog", "old", "dashboard"]
+output:
+  html_document:
+    theme: "flatly"
+    css: style.css
+navbar:
+  title: "Social Impact Data Commons: Fairfax County SNAP Tool"
+  left:
+    - text: "Project Overview"
+      href: index.html
+    - text: "SNAP Background"
+      href: background.html
+    - text: "Exploring At-Risk Tracts"
+      href: tracts.html
+    - text: "Overall Policy Effects"
+      href: overall_effects.html
+    - text: "Policy Effects by Income Level"
+      menu: 
+      - text: "Income less than $35,000"
+        href: cat1_effects.html
+      - text: "Income between $35,000 and $49,999"
+        href: cat2_effects.html
+      - text: "Income between $50,000 and $59,999"
+        href: cat3_effects.html
+      - text: "Income over $60,000"
+        href: else_effects.html
+    - text: ""
+      icon: fa-github
+      href: "https://github.com/uva-bi-sdad"
