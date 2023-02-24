@@ -6,6 +6,69 @@ subtitle: "What is SNAP?"
 
 ## SNAP Rules / Background
 
+[General Overview of SNAP Rules](https://www.cbpp.org/research/food-assistance/a-quick-guide-to-snap-eligibility-and-benefits)
+
+SNAP is 100% federally funded but administrative costs are largely paid for by states/counties. Counties will occasionally supplement SNAP funding as well. SNAP is county-administered specifically in Virginia.
+
+Under federal rules, to be eligible for benefits a household’s income and resources must meet *three tests*:  
+
+
+**Gross monthly income** - that is, household income before any of the program’s deductions are applied — generally must be at or below 130 percent of the poverty line. The poverty level is higher for bigger families and lower for smaller families.  
+**Net income** - household income after deductions are applied must be at or below the poverty line.  
+**Assets** must fall below certain limits: households without a member who is age 60 or older or who has a disability must have assets of $2,750.  
+
+However, due to *Broad-Based Categorical Eligibility*, Virginia, Maryland, and DC have a **gross monthly income limit at 200% of poverty level and no asset limits**
+
+Resources for Broad-Based Categorical Eligibility:  
+[General Overview of Broad-Based Categorical Eligibility](https://www.cbpp.org/research/food-assistance/snaps-broad-based-categorical-eligibility-supports-working-families-and)  
+[Eligibility Rules for Different States](https://www.fns.usda.gov/snap/broad-based-categorical-eligibility)  
+
+All states have the same Maximum Monthly Benefit for the fiscal year of 2023, differing by household size (thresholds shown below).
+
+![SNAP Benefit Thresholds](img/SNAP_Benefits_Table.png)
+
 ## What are the different factors (household size, income levels, eligibility, etc.)
 
+SNAP eligibility and benefit rules are largely the same across all states except for changes in BBCE and deductible amounts to calculate net income (see specifics for VA, MD, and DC below)   
+[Virginia](https://www.snapscreener.com/guides/virginia)  
+[Maryland](https://www.snapscreener.com/guides/maryland)  
+[District of Columbia](https://www.snapscreener.com/guides/district-of-columbia)  
+
+VA, MD, and DC  all deduct for dependent care, monthly rent/mortgage, and homeowners insurance and taxes. They only differ in terms of utility and phone allowance deductions.
+
+
 ## Exploratory Plots
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(acs)
+library(tidycensus)
+library(tigris)
+library(plotly)
+library(shiny)
+library(ggplot2)
+library(viridis)
+
+weights_geo <- read.csv("img/weights_geo.csv")
+
+geo_census <- get_acs(geography = "tract",
+                                  year = 2020,
+                                  variables = c(Total = "B22003_001"
+                                  ),
+                                  state = 51, # VA
+                                  county = 059,
+                                  survey = "acs5",
+                                  geometry = TRUE)
+
+geo_census$GEOID <- as.numeric(geo_census$GEOID)
+fairfax <- geo_census[, c(1, 2, 6)]
+
+weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
+
+#View(weights_geo_inc)
+```
+
+```{r, echo=FALSE}
+gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit")
+ggplotly(gg_benefit_eligibility)
+```

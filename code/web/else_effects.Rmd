@@ -2,8 +2,49 @@
 title: "Policy Effects for Incomes over $60,000"
 subtitle: "subtitle"
 ---
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(acs)
+library(tidycensus)
+library(tigris)
+library(plotly)
+library(shiny)
+library(ggplot2)
+
+weights_geo_inc <- read.csv("img/weights_geo_inc.csv")
+
+geo_census <- get_acs(geography = "tract",
+                                  year = 2020,
+                                  variables = c(Total = "B22003_001"
+                                  ),
+                                  state = 51, # VA
+                                  county = 059,
+                                  survey = "acs5",
+                                  geometry = TRUE)
+
+geo_census$GEOID <- as.numeric(geo_census$GEOID)
+fairfax <- geo_census[, c(1, 2, 6)]
+
+weights_geo_inc <- weights_geo_inc %>% left_join(fairfax, by = c("geoid"="GEOID"))
+
+#View(weights_geo_inc)
+```
+
 ## Distributions of COVID-SNAP changes at income levels
 
 ## Box plot
 
 ## SNAP eligibility vs SNAP $ change at household and person level for tracts/income levels
+
+```{r, echo=FALSE}
+cat_snap <- c('Less than $35,000', '$35,000 to $49,999', '$50,000 to $59,999')
+dat=weights_geo_inc %>% filter(!income_cat %in% cat_snap) 
+
+g <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit - monthly_mean_COVID_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size, fill = income_cat)) + geom_point() + labs(title = "Loss of SNAP Benefits with New Policy per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)")
+
+gp <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=(monthly_mean_SNAP_benefit - monthly_mean_COVID_benefit)/average_hh_size, label = NAME, label2 = households_represented, fill = income_cat)) + geom_point() + labs(title = "Loss of SNAP Benefits with New Policy Per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size")
+
+ggplotly(g)
+ggplotly(gp)
+```

@@ -2,8 +2,59 @@
 title: "Policy Effects for Income less than $35,000"
 subtitle: "subtitle"
 ---
-## Distributions of COVID-SNAP changes at income levels
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(acs)
+library(tidycensus)
+library(tigris)
+library(plotly)
+library(shiny)
+library(ggplot2)
+library(viridis)
+
+weights_geo_inc <- read.csv("img/weights_geo_inc.csv")
+
+geo_census <- get_acs(geography = "tract",
+                                  year = 2020,
+                                  variables = c(Total = "B22003_001"
+                                  ),
+                                  state = 51, # VA
+                                  county = 059,
+                                  survey = "acs5",
+                                  geometry = TRUE)
+
+geo_census$GEOID <- as.numeric(geo_census$GEOID)
+fairfax <- geo_census[, c(1, 2, 6)]
+
+weights_geo_inc <- weights_geo_inc %>% left_join(fairfax, by = c("geoid"="GEOID"))
+
+#View(weights_geo_inc)
+```
+
+## Distributions of COVID and SNAP Benefits
+```{r, echo=FALSE, warning=FALSE}
+data_long <- weights_geo_inc %>% filter(income_cat == "Less than $35,000") %>% pivot_longer(cols= c(monthly_mean_COVID_benefit, monthly_mean_SNAP_benefit), names_to = "Benefit_Type", values_to = "Dollars_Received")
+#View(data_long)
+
+mean_benefit_df <- data_long  %>% group_by(Benefit_Type) %>% summarize(Mean=mean(Dollars_Received, na.rm = TRUE))
+  
+
+g <- ggplot(data=data_long, aes(x=Dollars_Received, group=Benefit_Type, fill=Benefit_Type)) + geom_density(adjust=1.5, alpha=.5) + scale_fill_viridis(name = "Benefit Type", option = "D", discrete=TRUE, end=.6) + geom_vline(data=mean_benefit_df, aes(xintercept=Mean, labels=c("Monthly Covid Benefit", "Monthly SNAP Benefit")), color="#232D4B", linetype="dashed", linewidth=1) + theme_bw() + labs(title="Monthly Benefit for Yearly Income < $35,000", x="Monthly Average Benefit / Household (Dollars)")
+ggplotly(g)
+```
 
 ## Box plot
 
 ## SNAP eligibility vs SNAP $ change at household and person level for tracts/income levels
+
+```{r, echo=FALSE}
+dat = weights_geo_inc %>% filter(income_cat == "Less than $35,000")
+
+g <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit - monthly_mean_COVID_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size, fill = income_cat)) + geom_point() + labs(title = "Loss of SNAP Benefits with New Policy per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)") + scale_fill_manual(values="#232D4B")
+
+gp <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=(monthly_mean_SNAP_benefit - monthly_mean_COVID_benefit)/average_hh_size, label = NAME, label2 = households_represented, fill = income_cat)) + geom_point() + labs(title = "Loss of SNAP Benefits with New Policy Per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size") + scale_fill_manual(values="#232D4B")
+
+ggplotly(g)
+ggplotly(gp)
+```

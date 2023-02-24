@@ -1,0 +1,97 @@
+---
+title: "Untitled"
+author: "cm"
+date: "2/14/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Data
+```{r}
+
+```
+# libraries
+```{r}
+#install.packages('catchment')
+#library(catchment)
+library(sf)
+library(leaflet)
+library(dplyr)
+#library(catchment)
+```
+# start new
+```{r}
+ rm(list=ls())
+```
+
+
+```{r}
+
+library(tidycensus)
+library(tidyverse)
+
+census_api_key("eba406410c653b81d6a795ac4e989221f7bdf302")
+
+pop_county <- get_acs(geography = "tract", 
+                  year = 2020,
+                  variables = c(population = "B01001_001", 
+                                mean_income = 'B19013_001'),
+                  state = c("VA"),
+                  county = c("Fairfax county"),
+                  survey = "acs5",
+                  output = "wide",
+                  geometry = TRUE)
+
+#View(pop_county)
+```
+
+```{r}
+#tract shapes
+tract_shapes <-   st_transform( tigris::tracts(state = "VA", county = "Fairfax county", class = "sf", year=2020), 4326)
+
+
+library(dplyr)
+pal <- colorBin("RdYlBu", pop_county$mean_incomeE, bins = 10)
+
+#create map
+map <- leaflet(tract_shapes, options = leafletOptions(attributionControl = FALSE)) %>%
+  addTiles() %>%
+  addScaleBar("bottomleft") %>%
+  addPolylines(data = tract_shapes, color = "black", opacity = 1, weight = 1) %>%
+  addLayersControl(
+    position = "topleft", overlayGroups = c("Population", "Income")
+  )  %>%
+  
+  addPolygons(
+    fillColor = colorNumeric("RdYlBu", pop_county$populationE)(pop_county$populationE),
+    fillOpacity = 1, stroke = FALSE, group = "Population", label = pop_county$populationE
+  ) %>%
+  hideGroup("Population") %>%
+  addControl("Income per census tract, Fairfax County, VA", "topright") %>%
+  addLegend("bottomright", pal, pop_county$mean_incomeE, opacity = .7) %>%
+  addPolygons(
+    fillColor = pal(pop_county$mean_incomeE), fillOpacity = .7, weight = 1, color = "#000",
+    highlightOptions = highlightOptions(color = "#fff"), group = "Income",
+    label = paste0(
+      "GEOID: ", pop_county$GEOID, ", Population: ", pop_county$populationE,
+      ", Median Income: ", round(pop_county$mean_incomeE, 4)
+    )
+  )
+
+map
+```
+
+```{r}
+leaflet() %>%
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles("Stamen.Toner", group = "Toner by Stamen") %>%
+  addMarkers(runif(20, -75, -74), runif(20, 41, 42), group = "Markers") %>%
+  addLayersControl(
+    baseGroups = c("OpenStreetMap", "Toner by Stamen"),
+    overlayGroups = c("Markers")
+  )
+```
+

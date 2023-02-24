@@ -2,8 +2,72 @@
 title: "Overall policy effects"
 subtitle: "subtitle"
 ---
-## Distributions of COVID-SNAP changes at income levels
+
+```{r, warning=FALSE, echo=FALSE, include=FALSE}
+library(tidyverse)
+library(acs)
+library(tidycensus)
+library(tigris)
+library(plotly)
+library(shiny)
+library(ggplot2)
+library(viridis)
+library(gridExtra)
+
+weights_geo_inc <- read.csv("img/weights_geo_inc.csv")
+
+geo_census <- get_acs(geography = "tract",
+                                  year = 2020,
+                                  variables = c(Total = "B22003_001"
+                                  ),
+                                  state = 51, # VA
+                                  county = 059,
+                                  survey = "acs5",
+                                  geometry = TRUE)
+
+geo_census$GEOID <- as.numeric(geo_census$GEOID)
+fairfax <- geo_census[, c(1, 2, 6)]
+
+weights_geo_inc <- weights_geo_inc %>% left_join(fairfax, by = c("geoid"="GEOID"))
+```
+
+## Distributions of COVID and SNAP Benefits at Income Levels
+
+```{r, echo=FALSE, warning=FALSE}
+cat_snap <- c('Less than $35,000', '$35,000 to $49,999', '$50,000 to $59,999')
+g1 <- ggplot(data=weights_geo_inc %>% filter(income_cat %in% cat_snap) , aes(x=monthly_mean_SNAP_benefit, group=income_cat, fill=income_cat)) +
+    geom_density(adjust=1.5, alpha=.5)  + geom_vline(aes(xintercept=mean(monthly_mean_SNAP_benefit)), color="#232D4B", linetype="dashed", linewidth=1) +  geom_density(adjust=1.5, alpha=.5) + scale_fill_viridis(discrete=TRUE, option = "D", end=.9) + theme_bw() + labs(title="Monthly SNAP Benefit for Household Income Levels", x="Monthly Average SNAP Benefit / Household (Dollars)")
+
+g2 <- ggplot(data=weights_geo_inc %>% filter(income_cat %in% cat_snap) , aes(x=monthly_mean_COVID_benefit, group=income_cat, fill=income_cat)) +
+    geom_density(adjust=1.5, alpha=.5)  + geom_vline(aes(xintercept=mean(monthly_mean_COVID_benefit)), color="#232D4B", linetype="dashed", linewidth=1) +  geom_density(adjust=1.5, alpha=.5) + scale_fill_viridis(discrete=TRUE, option = "D", end=.9) + theme_bw() + labs(title="Monthly COVID SNAP Benefit for Household Income Levels", x="Monthly Average COVID Benefit / Household (Dollars)")
+
+ggplotly(g2)
+ggplotly(g1)
+
+```
+
+## Distributions of COVID-SNAP Changes at Income Levels
+
+```{r, echo=FALSE, warning=FALSE}
+g <- ggplot(data=weights_geo_inc %>% filter(income_cat %in% cat_snap) , aes(x=monthly_mean_COVID_benefit-monthly_mean_SNAP_benefit, group=income_cat, fill=income_cat)) +
+    geom_density(adjust=1.5, alpha=.5)  + geom_vline(aes(xintercept=mean(monthly_mean_COVID_benefit-monthly_mean_SNAP_benefit)), color="#232D4B", linetype="dashed", linewidth=1) +  geom_density(adjust=1.5, alpha=.5) + scale_fill_viridis(discrete=TRUE, option = "D", end=.9) + theme_bw() + labs(title="Monthly Benefit Loss for Household Income Levels", x="Monthly Average Benefit Loss / Household (Dollars)")
+
+ggplotly(g)
+```
+
+```{r, echo=FALSE, warning=FALSE}
+g <- ggplot(data=weights_geo_inc %>% filter(income_cat %in% cat_snap) , aes(x=(monthly_mean_COVID_benefit-monthly_mean_SNAP_benefit)/average_hh_size, group=income_cat, fill=income_cat)) +
+    geom_density(adjust=1.5, alpha=.5)  + geom_vline(aes(xintercept=mean((monthly_mean_COVID_benefit-monthly_mean_SNAP_benefit)/average_hh_size)), color="#232D4B", linetype="dashed", linewidth=1) +  geom_density(adjust=1.5, alpha=.5) + scale_fill_viridis(discrete=TRUE, option = "D", end=.9) + theme_bw() + labs(title="Monthly Benefit Loss for Person at Household Income Levels", x="Monthly Average Benefit Loss / Person (Dollars)")
+
+ggplotly(g)
+```
 
 ## Box plot
 
+```{r, echo=FALSE, warning=FALSE}
+box3 <- ggplot(weights_geo_inc, aes(x=factor(income_cat, level=c('Less than $35,000', '$35,000 to $49,999', '$50,000 to $59,999', '$60,000 to $74,999', '$75,000 to $99,999')), y=monthly_mean_COVID_benefit - monthly_mean_SNAP_benefit, fill=income_cat)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) + labs(title = "Monthly Benefit Loss for Household Income Levels", x = "Income Levels", y = "Estimated Benefit Loss (Dollars)") + scale_fill_viridis(discrete=TRUE, option = "D", end=.9)
+ggplotly(box3)
+```
+
 ## SNAP eligibility vs SNAP $ change at household and person level for tracts/income levels
+

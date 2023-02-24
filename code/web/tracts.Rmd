@@ -2,6 +2,61 @@
 title: "At-Risk Tracts"
 subtitle: "Which tracts are at-risk?"
 ---
-## SNAP Eligibility vs SNAP $ plot
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(acs)
+library(tidycensus)
+library(tigris)
+library(plotly)
+library(shiny)
+library(ggplot2)
+library(viridis)
+
+weights_geo <- read.csv("img/weights_geo.csv")
+
+geo_census <- get_acs(geography = "tract",
+                                  year = 2020,
+                                  variables = c(Total = "B22003_001"
+                                  ),
+                                  state = 51, # VA
+                                  county = 059,
+                                  survey = "acs5",
+                                  geometry = TRUE)
+
+geo_census$GEOID <- as.numeric(geo_census$GEOID)
+fairfax <- geo_census[, c(1, 2, 6)]
+
+weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
+
+#View(weights_geo_inc)
+```
 
 ## Leaflet plot
+
+```{r, echo=FALSE, warning=FALSE}
+chloropleth_geo_income <- ggplot(weights_geo, aes(fill = monthly_mean_income, label = NAME, label2 = monthly_mean_SNAP_benefit, label3 = monthly_mean_COVID_benefit, label4 = average_hh_size, geometry=geometry)) +
+  geom_sf() + scale_fill_viridis(option="magma")
+
+ggplotly(chloropleth_geo_income)
+```
+
+
+## SNAP Eligibility vs SNAP $ plot
+
+```{r, echo=FALSE}
+hp <- c(51059482206, 51059452301, 51059451501)
+highlight_points <- weights_geo %>% filter(geoid %in% hp)
+```
+
+```{r, echo=FALSE}
+gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit per Household")
+ggplotly(gg_benefit_eligibility)
+```
+
+*Notable Tracts of Concern: 4822.06, 4523.01, 4515.01
+
+```{r, echo=FALSE}
+gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit / average_hh_size, label = NAME, label2 = households_represented)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit per Person", y = "Monthly Mean SNAP Benefit / Average Household Size") + geom_point(data=highlight_points, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit / average_hh_size), color="#F84C1E", size=2)
+ggplotly(gg_benefit_eligibility)
+```
