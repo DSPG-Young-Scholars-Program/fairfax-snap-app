@@ -1,6 +1,5 @@
 ---
-title: "Overall policy effects"
-subtitle: "subtitle"
+title: "Overall Policy Effects"
 ---
 
 ```{r, warning=FALSE, echo=FALSE, include=FALSE}
@@ -13,6 +12,7 @@ library(shiny)
 library(ggplot2)
 library(viridis)
 library(gridExtra)
+library(gt)
 
 weights_geo_inc <- read.csv("img/weights_geo_inc.csv")
 
@@ -69,5 +69,65 @@ box3 <- ggplot(weights_geo_inc, aes(x=factor(income_cat, level=c('Less than $35,
 ggplotly(box3)
 ```
 
-## SNAP eligibility vs SNAP $ change at household and person level for tracts/income levels
+## SNAP Eligibility vs SNAP Loss at Household and Person Levels (Less than $60,000)
 
+When we consider only the income categories that are impacted by the new policy change that removes COVID SNAP guidelines, we graph the overall impact on each Fairfax census tract for households that make less than $60,000 a year. Each of these points represents a census tract, and each statistic shown at a point is the mean of the statistics for each of the three lowest income levels, weighted against the number of households they represent. 
+
+```{r, echo=FALSE}
+names(weights_geo_inc)[names(weights_geo_inc)=='monthly_mean_COVID_benefit'] <- 'Monthly mean COVID benefit'
+names(weights_geo_inc)[names(weights_geo_inc)=='monthly_mean_SNAP_benefit'] <- 'Monthly mean SNAP benefit'
+
+dat = weights_geo_inc  %>% filter(income_cat %in% cat_snap) %>% mutate(people_represented = round(households_represented*average_hh_size, 2))
+```
+
+```{r, echo=FALSE}
+under_60 <- dat %>% group_by(geoid) %>% mutate(`Monthly Benefit Loss` = weighted.mean(`Monthly mean COVID benefit`, households_represented) - weighted.mean(`Monthly mean SNAP benefit`, households_represented)) %>% mutate(`Average Household Size` = weighted.mean(average_hh_size, households_represented)) %>% mutate(`SNAP Eligibility Proportion` = weighted.mean(SNAP_eligibility_proportion, households_represented)) %>% mutate(`Households Represented` = sum(households_represented)) %>% mutate(`People Represented` = sum(people_represented)) %>% distinct(geoid, `Monthly Benefit Loss`, `Average Household Size`, `SNAP Eligibility Proportion`, `Households Represented`, `People Represented`, NAME)
+```
+
+```{r, echo=FALSE}
+g <- ggplot(under_60, aes(x=`SNAP Eligibility Proportion`, y=`Monthly Benefit Loss`, label = NAME, label2 = `Households Represented`, label3 = `Average Household Size`)) + geom_point(color="#232D4B") + labs(title = "Monthly Loss of SNAP Benefits per Household per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)")
+
+gp <- ggplot(under_60, aes(x=`SNAP Eligibility Proportion`, y=(`Monthly Benefit Loss` / `Average Household Size`), label = NAME, label2 = `People Represented`)) + geom_point(color="#232D4B") + labs(title = "Monthly Loss of SNAP Benefits per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size")
+
+ggplotly(g)
+```
+
+Based on the above graph, we need to examine the tracts that lose the most monthly SNAP benefit as a result of the new policy, as well as which tracts are the most eligible for SNAP in the first place. *The COVID policy affects the range of benefit given but does not greatly impact the eligibility requirements for SNAP, which is why the eligibility proportion does not change as a result of the new policy.*
+
+```{r, echo=FALSE}
+at_risk_hh = under_60 %>% ungroup() %>% rename(`Household Eligibility Proportion` = `SNAP Eligibility Proportion`) %>% filter(`Households Represented` > 5) %>% arrange(desc(`Monthly Benefit Loss`)) %>% select(NAME, `Household Eligibility Proportion`, `Monthly Benefit Loss`, `Households Represented`, `Average Household Size`) %>% slice(1:5) %>% gt() %>% tab_header(
+    title = md("Tracts with Greatest Monthly Benefit Losses per Household"),
+    subtitle = md("For Income under $60,000 a year")
+  )
+at_risk_hh
+```
+
+```{r, echo=FALSE}
+at_risk_hh = under_60 %>% ungroup() %>% rename(`Household Eligibility Proportion` = `SNAP Eligibility Proportion`) %>% filter(`Households Represented` > 5) %>% arrange(desc(`Household Eligibility Proportion`)) %>% select(NAME, `Household Eligibility Proportion`, `Monthly Benefit Loss`, `Households Represented`, `Average Household Size`) %>% slice(1:5) %>% gt() %>% tab_header(
+    title = md("Tracts with Highest Proportions of SNAP Eligible Households"),
+    subtitle = md("For Income under $60,000 a year")
+  )
+at_risk_hh
+```
+
+```{r, echo=FALSE}
+ggplotly(gp)
+```
+
+We also need to examine the impact of the new policy that reduces benefit on the tracts after considering differing average household sizes per tract. As a result, we look at the most impacted tract by monthly SNAP benefit lost and by eligibility proportion, but this time on a per-person instead of a per-household basis.
+
+```{r, echo=FALSE}
+at_risk_p = under_60 %>% ungroup() %>% mutate(`Monthly Benefit Loss` = `Monthly Benefit Loss`/`Average Household Size`) %>% rename(`Household Eligibility Proportion` = `SNAP Eligibility Proportion`) %>% filter(`Households Represented` > 5) %>% arrange(desc(`Monthly Benefit Loss`)) %>% select(NAME, `Household Eligibility Proportion`, `Monthly Benefit Loss`, `People Represented`) %>% slice(1:5) %>% gt() %>% tab_header(
+    title = md("Tracts with Greatest Monthly Benefit Losses per Person"),
+    subtitle = md("For Income under $60,000 a year")
+  )
+at_risk_p
+```
+
+```{r, echo=FALSE}
+at_risk_p = under_60 %>% ungroup() %>% mutate(`Monthly Benefit Loss per Person` = `Monthly Benefit Loss`/`Average Household Size`) %>% rename(`Household Eligibility Proportion` = `SNAP Eligibility Proportion`) %>% filter(`Households Represented` > 5) %>% arrange(desc(`Household Eligibility Proportion`)) %>% select(NAME, `Household Eligibility Proportion`, `Monthly Benefit Loss per Person`, `People Represented`) %>% slice(1:5) %>% gt() %>% tab_header(
+    title = md("Tracts with Highest Proportions of SNAP Eligible Households"),
+    subtitle = md("For Income under $60,000 a year")
+  )
+at_risk_p
+```

@@ -11,6 +11,7 @@ library(plotly)
 library(shiny)
 library(ggplot2)
 library(viridis)
+library(gt)
 weights_geo_inc <- read.csv("img/weights_geo_inc.csv")
 geo_census <- get_acs(geography = "tract",
                                   year = 2020,
@@ -55,15 +56,48 @@ plotly::ggplotly(gg, tooltip = c("x", "y", "text")) %>%  layout(legend = list(or
                                      y = -0.2) ) 
 ```
 
-
 ## Box plot
 
-## SNAP eligibility vs SNAP $ change at household and person level for tracts/income levels
+## SNAP Eligibility vs SNAP Loss at Household and Person Levels (Less than $35,000)
 
 ```{r, echo=FALSE}
-dat = weights_geo_inc %>% filter(income_cat == "Less than $35,000")
-g <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=`Monthly mean SNAP benefit` - `Monthly mean COVID benefit`, label = NAME, label2 = households_represented, label3 = average_hh_size, fill = income_cat)) + geom_point() + labs(title = "Loss of SNAP Benefits with New Policy per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)") + scale_fill_manual(values="#232D4B")
-gp <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=(`Monthly mean SNAP benefit` - `Monthly mean COVID benefit`)/average_hh_size, label = NAME, label2 = households_represented, fill = income_cat)) + geom_point() + labs(title = "Loss of SNAP Benefits with New Policy Per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size") + scale_fill_manual(values="#232D4B")
+dat = weights_geo_inc %>% filter(income_cat == "Less than $35,000") %>% mutate(people_represented = round(households_represented*average_hh_size, 2))
+
+g <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`, label = NAME, label2 = households_represented, label3 = average_hh_size, fill = income_cat)) + geom_point() + labs(title = "Monthly Loss of SNAP Benefits per Household per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)") + scale_fill_manual(values="#232D4B")
+gp <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=(`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`)/average_hh_size, label = NAME, label2 = people_represented, fill = income_cat)) + geom_point() + labs(title = "Monthly Loss of SNAP Benefits per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size") + scale_fill_manual(values="#232D4B")
+
 ggplotly(g)
+```
+
+When looking at potential at-risk tracts in this income category, we examine the tracts with the top 5 highest monthly benefit losses per household and per person. We filter our data to exclude tracts with 5 or fewer households represented in order to consider changes that could impact as many people as possible.
+
+```{r, echo=FALSE}
+at_risk_hh = dat %>% filter(households_represented > 5) %>% mutate(`Monthly Benefit Loss` = `Monthly mean COVID benefit` - `Monthly mean SNAP benefit`) %>% arrange(desc(`Monthly Benefit Loss`)) %>% rename(`Average Household Size` = average_hh_size) %>% rename(`Households Represented` = households_represented) %>% select(NAME, `Monthly Benefit Loss`, `Households Represented`, `Average Household Size`) %>% slice(1:5) %>% gt() %>% tab_header(
+    title = md("Tracts with Greatest Monthly Benefit Losses per Household"),
+    subtitle = md("at income level **Less than $35,000**")
+  )
+at_risk_hh
+```
+
+```{r, echo=FALSE}
+hp <- c("Census Tract 4316.01, Fairfax County, Virginia", "Census Tract 4802.05, Fairfax County, Virginia", "Census Tract 4223.02, Fairfax County, Virginia")
+highlight_points <- dat %>% filter(NAME %in% hp)
+
+gp <- gp + geom_point(data=highlight_points, aes(x=SNAP_eligibility_proportion, y=(`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`)/average_hh_size), color ="#F84C1E", size=2)
 ggplotly(gp)
+```
+
+```{r, echo=FALSE}
+at_risk_p = dat %>% filter(households_represented > 5) %>% mutate(`Monthly Benefit Loss` = (`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`)/average_hh_size) %>% arrange(desc(`Monthly Benefit Loss`)) %>% rename(`Household Eligibility Proportion` = SNAP_eligibility_proportion) %>% rename(`People Represented` = people_represented) %>% select(NAME, `Household Eligibility Proportion`, `Monthly Benefit Loss`, `People Represented`) %>% slice(1:5) %>% gt() %>% tab_header(
+    title = md("Tracts with Greatest Monthly Benefit Losses per Person"),
+    subtitle = md("at income level **Less than $35,000**")
+  ) %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#F84C1E")
+    ),
+    locations = cells_body(
+      rows = c(1, 2, 4))
+  )
+at_risk_p
 ```
