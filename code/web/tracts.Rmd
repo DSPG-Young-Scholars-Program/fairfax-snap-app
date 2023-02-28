@@ -73,6 +73,7 @@ leaflet(weights_geo , options = leafletOptions(attributionControl = FALSE)) %>%
       "Mean income per month: $", round(weights_geo$monthly_mean_income,2) ,  "<br/>", 
       "Census tract: ", weights_geo$NAME, "<br/>",
       "Average monthly benefit of SNAP-Covid: $", round(weights_geo$monthly_mean_COVID_benefit,2), "<br/>",
+      "Average monthly benefit of new policy SNAP: $", round(weights_geo$monthly_mean_SNAP_benefit,2), "<br/>",
       "SNAP eligibility (%): ", round(weights_geo$SNAP_eligibility_proportion, 3)
     )     %>%
       lapply(htmltools::HTML)

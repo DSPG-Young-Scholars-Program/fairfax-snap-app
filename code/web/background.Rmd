@@ -10,12 +10,12 @@ Participants may use SNAP benefits in supermarkets, grocery stores, convenience 
 
 Numbers of the SNAP - 2022:
 
-People Participating (thousands):	41,207
-Households Participating (thousands):	21,612
-Value of Benefits (million dollars):	113,738
-Average Monthly Benefit Per Person (dollars):	230.01
-Average Monthly Benefit Per Household (dollars):	438.56
-Total Cost (million dollars):	119,242
+People Participating (thousands):	41,207  
+Households Participating (thousands):	21,612  
+Value of Benefits (million dollars):	113,738  
+Average Monthly Benefit Per Person (dollars):	230.01  
+Average Monthly Benefit Per Household (dollars):	438.56  
+Total Cost (million dollars):	119,242  
 
 
 Total cost includes benefits, administrative expenses, and other cost, for example, printing and processing stamps. 
@@ -55,7 +55,42 @@ SNAP eligibility and benefit rules are largely the same across all states except
 [Maryland](https://www.snapscreener.com/guides/maryland)  
 [District of Columbia](https://www.snapscreener.com/guides/district-of-columbia)  
 
-VA, MD, and DC  all deduct for dependent care, monthly rent/mortgage, and homeowners insurance and taxes. They only differ in terms of utility and phone allowance deductions.
+VA, MD, and DC  all deduct for dependent care, monthly rent/mortgage, and homeowners insurance and taxes. They only differ in terms of utility and phone allowance deductions.   
+
+### SNAP Benefit Calculation Approach
+
+In order to calculate estimated SNAP benefit and other statistics shown in the data dictionary below, we follow the methodology used in the [Virginia SNAP Prescreener](https://www.snapscreener.com/screener?state=VA).  
+
+1. We first use a household's monthly income as their **gross monthly income**. 
+
+2. We then calculate the **net income** by subtracting deductions from the gross monthly income.  
+  -In our calculations using the data we have available, we include household size, income, dependent care, and rent as potential deductibles.  
+  -Additionally, we assume that the household uses heating and water utilities, which they receive deductions for.
+
+Once we have the gross and net monthly incomes, we calculate the estimated SNAP and COVID-SNAP benefits from the maximum and minimum allotments per household size.
+
+3. We check that gross income is below the income limit for the given household size.  
+  -if this is the case then we subtract 30% of the net income from the max allotment for the given household size to get our estimated SNAP benefit.  
+
+4. For COVID-SNAP benefit, we take the maximum of the max allotment and the estimated SNAP benefit + 95, setting the value to whichever is greater. We then use both of these estimated benefits in plots and explorations. 
+
+*Our results from the calculations have been cross-referenced with those from the snapscreener website to ensure their validity. For more detailed information on the benefit calculation process, please use the snapscreener link above.*   
+
+### Data Dictionary
+
+| Variable | Description |
+| -------- | ----------- |
+| geoid | The geographic label for a Fairfax Census Tract |
+| NAME | The full name of a Fairfax Census Tract as collected in census data |
+| Mean monthly income | The average monthly income per household in a given tract (dollars) |
+| Mean monthly COVID benefit | The average monthly SNAP benefit amount received by a household during COVID crisis rules (dollars) |
+| Mean monthly SNAP benefit | The average monthly SNAP benefit amount received by a household after new policy implementation (dollars) |
+| Mean Benefit Loss | The difference between Monthly mean COVID benefit and Monthly mean SNAP benefit that a household loses after new policy implementation (dollars) |
+| SNAP Eligibility Proportion | The proportion of households within a given tract that receive above $0 in predicted SNAP benefits |
+| Income Category | The nine different income categories that a household's yearly income can fall in |
+| Average Household Size | The average number of people residing in a household in a given tract |
+| Households Represented | The amount of households that the statistics for a given tract represent |
+| People Represented | Households Represented divided by Average Household Size: this produces an estimate for the people represented within a tract or income category |
 
 
 ## Exploratory Plots
@@ -90,6 +125,6 @@ weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
 ```
 
 ```{r, echo=FALSE}
-gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit")
+gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit", y = "Monthly Mean SNAP Benefit", x = "SNAP Eligibility Proportion")
 ggplotly(gg_benefit_eligibility)
 ```
