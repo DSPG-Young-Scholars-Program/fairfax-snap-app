@@ -2,9 +2,26 @@
 title: "Overview of SNAP"
 subtitle: "What is SNAP?"
 ---
-## What is SNAP, etc.
+## What is SNAP?
 
-## SNAP Rules / Background
+The Supplemental Nutrition Assistance Program (SNAP) is the largest federal nutrition assistance program.  Formerly known as Food Stamps, SNAP helps families to afford a basic diet. 
+
+Participants may use SNAP benefits in supermarkets, grocery stores, convenience stores and food retailers to purchase food.
+
+Numbers of the SNAP - 2022:
+
+People Participating (thousands):	41,207
+Households Participating (thousands):	21,612
+Value of Benefits (million dollars):	113,738
+Average Monthly Benefit Per Person (dollars):	230.01
+Average Monthly Benefit Per Household (dollars):	438.56
+Total Cost (million dollars):	119,242
+
+
+Total cost includes benefits, administrative expenses, and other cost, for example, printing and processing stamps. 
+
+
+## Eligibility
 
 [General Overview of SNAP Rules](https://www.cbpp.org/research/food-assistance/a-quick-guide-to-snap-eligibility-and-benefits)
 
@@ -22,6 +39,10 @@ However, due to *Broad-Based Categorical Eligibility*, Virginia, Maryland, and D
 Resources for Broad-Based Categorical Eligibility:  
 [General Overview of Broad-Based Categorical Eligibility](https://www.cbpp.org/research/food-assistance/snaps-broad-based-categorical-eligibility-supports-working-families-and)  
 [Eligibility Rules for Different States](https://www.fns.usda.gov/snap/broad-based-categorical-eligibility)  
+
+
+## Calculation of SNAP benefits per family - Methodology
+
 
 All states have the same Maximum Monthly Benefit for the fiscal year of 2023, differing by household size (thresholds shown below).
 
