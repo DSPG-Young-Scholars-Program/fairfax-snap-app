@@ -15,6 +15,8 @@ library(viridis)
 
 weights_geo <- read.csv("img/weights_geo.csv")
 
+census_api_key( Sys.getenv("census_key") )
+
 geo_census <- get_acs(geography = "tract",
                                   year = 2020,
                                   variables = c(Total = "B22003_001"
@@ -32,17 +34,54 @@ weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
 #View(weights_geo_inc)
 ```
 
-## Leaflet plot
+## Average monthly benefit of SNAP-Covid in Fairfax County (2020)
 
 ```{r, echo=FALSE, warning=FALSE}
-chloropleth_geo_income <- ggplot(weights_geo, aes(fill = monthly_mean_income, label = NAME, label2 = monthly_mean_SNAP_benefit, label3 = monthly_mean_COVID_benefit, label4 = average_hh_size, geometry=geometry)) +
-  geom_sf() + scale_fill_viridis(option="magma")
-
-ggplotly(chloropleth_geo_income)
+# chloropleth_geo_income <- ggplot(weights_geo, aes(fill = monthly_mean_income, label = NAME, label2 = monthly_mean_SNAP_benefit, label3 = monthly_mean_COVID_benefit, label4 = average_hh_size, geometry=geometry)) +
+#   geom_sf() + scale_fill_viridis(option="magma")
+# 
+# ggplotly(chloropleth_geo_income)
 ```
 
 
-## SNAP Eligibility vs SNAP $ plot
+
+
+```{r, echo=FALSE, warning=FALSE}
+library(sf)
+library(leaflet)
+library(dplyr)
+library(readr)
+
+#format st
+weights_geo <- st_as_sf(weights_geo, crs = 4326) # %>% filter(tot_hh > 10)
+
+#palette colors
+pal <- colorBin("viridis", weights_geo$monthly_mean_COVID_benefit)
+
+#map leaflet
+
+leaflet(weights_geo , options = leafletOptions(attributionControl = FALSE)) %>%
+  setView(lng = -77.2464825271027, lat = 38.84619925123701, zoom = 10) %>%  
+  addTiles() %>%
+  addScaleBar("bottomleft") %>%
+  addControl("Average monthly benefit of SNAP-Covid", "topright") %>%
+  addLegend("bottomright", pal, weights_geo$monthly_mean_COVID_benefit, opacity = .7) %>%
+  addPolygons(
+    fillColor = pal(weights_geo$monthly_mean_COVID_benefit), fillOpacity = .7, weight = 1, color = "#000",
+    highlightOptions = highlightOptions(color = "#fff"),
+    label = paste0(
+      "Mean income per month: $", round(weights_geo$monthly_mean_income,2) ,  "<br/>", 
+      "Census tract: ", weights_geo$NAME, "<br/>",
+      "Average monthly benefit of SNAP-Covid: $", round(weights_geo$monthly_mean_COVID_benefit,2), "<br/>",
+      "SNAP eligibility (%): ", round(weights_geo$SNAP_eligibility_proportion, 3)
+    )     %>%
+      lapply(htmltools::HTML)
+  ) 
+
+```
+
+
+## SNAP Eligibility and average SNAP benefit per month
 
 ```{r, echo=FALSE}
 hp <- c(51059482206, 51059452301, 51059451501)
