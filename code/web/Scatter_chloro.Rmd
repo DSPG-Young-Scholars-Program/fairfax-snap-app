@@ -1,0 +1,83 @@
+---
+title: "Proportion of households facing food insecurity"
+---
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+library(ggplot2)
+library(plotly)
+library(sf)
+library(dplyr)
+library(tidycensus)
+library(tidyverse)
+library(patchwork)
+library(ggiraph)
+library(scales)
+library(googleway)
+library(sf)
+library(spdep)
+library(leaflet)
+library(gt)
+library(acs)
+library(tigris)
+library(shiny)
+library(viridis)
+library(ggupset)
+```
+
+```{r, echo=FALSE, warning=FALSE }
+food_sec_tract_num_plot <- readRDS("~/git/cost-living/code/food_insecurity/revised_food_insecurity/Fairfax/food_sec_tract_num_plot.RDS")
+
+```
+
+#Proportion of households facing food insecurity in Fairfax county
+
+```{r }
+plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
+  geom_point() + 
+  labs(title = 'Food Insecurity and Number of Households by Census Tracts', 
+       subtitle = "Fairfax County, VA", x="Number of Households", 
+       y="Proportion of households facing Food Insecurity") + 
+  scale_colour_viridis_d() +
+  theme(legend.text=element_text(size=15)) +
+  geom_hline(yintercept= quantile(food_sec_tract_num_plot$insecure_pc, 0.75, na.rm = TRUE), linetype="dashed", color = "red") +
+  geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
+  labs(caption = "Dotted line: 75 percentile")
+
+ggplotly(plot_numhh_finsec)
+
+c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc, label1 = pumas, label_2 = NAME, geometry = geometry )) +
+  geom_sf()
+ggplotly(c)
+
+subplot(
+  plotly_build(ggplotly(c)) %>%
+    layout(title = ""),
+  plotly_build(ggplotly(plot_numhh_finsec)) %>%
+    layout(title = ""),
+  nrows = 1
+) %>% 
+  layout(title = "Proportion of households facing food insecurity")
+```
+
+```{r }
+c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc,  label1 = pumas, label_2 = NAME, geometry = geometry )) +
+  geom_sf_interactive(aes(data_id = geoid))+
+  theme_void()
+
+
+
+plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
+  geom_point_interactive(color = "black", size = 4, shape = 20, aes(data_id = geoid)) +
+  scale_fill_distiller(palette = "Blues", direction = 1) + 
+  labs(title = 'Food Insecurity', 
+       subtitle = "Fairfax County, VA", x="Number of Households", 
+       y="Proportion of households facing Food Insecurity") + 
+  scale_colour_viridis_d() +
+  theme(legend.text=element_text(size=15)) +
+  geom_hline(yintercept= quantile(food_sec_tract_num_plot$insecure_pc, 0.75, na.rm = TRUE), linetype="dashed", color = "red") +
+  geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
+  labs(caption = "Dotted line: 75 percentile")
+
+girafe(ggobj = c + plot_numhh_finsec) %>%
+  girafe_options(opts_hover(css = "fill:cyan;"))
+```
