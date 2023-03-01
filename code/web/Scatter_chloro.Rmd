@@ -31,7 +31,7 @@ food_sec_tract_num_plot <- readRDS("~/git/cost-living/code/food_insecurity/revis
 
 #Proportion of households facing food insecurity in Fairfax county
 
-```{r }
+```{r, echo=FALSE, warning=FALSE}
 plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
   geom_point() + 
   labs(title = 'Food Insecurity and Number of Households by Census Tracts', 
@@ -39,6 +39,8 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
        y="Proportion of households facing Food Insecurity") + 
   scale_colour_viridis_d() +
   theme(legend.text=element_text(size=15)) +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_colorbar(title.position = "top"))+
   geom_hline(yintercept= quantile(food_sec_tract_num_plot$insecure_pc, 0.75, na.rm = TRUE), linetype="dashed", color = "red") +
   geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
   labs(caption = "Dotted line: 75 percentile")
@@ -59,11 +61,11 @@ subplot(
   layout(title = "Proportion of households facing food insecurity")
 ```
 
-```{r }
+```{r, echo=FALSE, warning=FALSE}
 c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc,  label1 = pumas, label_2 = NAME, geometry = geometry )) +
   geom_sf_interactive(aes(data_id = geoid))+
   theme_void()
-
+  
 
 
 plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
@@ -74,6 +76,8 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
        y="Proportion of households facing Food Insecurity") + 
   scale_colour_viridis_d() +
   theme(legend.text=element_text(size=15)) +
+  theme(legend.position = "bottom") +
+  guides(fill = guide_colorbar(title.position = "top"))+
   geom_hline(yintercept= quantile(food_sec_tract_num_plot$insecure_pc, 0.75, na.rm = TRUE), linetype="dashed", color = "red") +
   geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
   labs(caption = "Dotted line: 75 percentile")
