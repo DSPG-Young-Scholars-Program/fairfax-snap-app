@@ -25,7 +25,7 @@ library(ggupset)
 ```
 
 ```{r, echo=FALSE, warning=FALSE }
-food_sec_tract_num_plot <- readRDS("~/git/cost-living/code/food_insecurity/revised_food_insecurity/Fairfax/food_sec_tract_num_plot.RDS")
+food_sec_tract_num_plot <- readRDS("img/food_sec_tract_num_plot.RDS")
 
 ```
 

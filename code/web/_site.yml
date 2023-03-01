@@ -12,6 +12,8 @@ navbar:
       href: index.html
     - text: "SNAP Background"
       href: background.html
+    - text: "SNAP Methodology"
+      href: SNAP_Methodology.html
     - text: "Exploring At-Risk Tracts"
       href: tracts.html
     - text: "Overall Policy Effects"

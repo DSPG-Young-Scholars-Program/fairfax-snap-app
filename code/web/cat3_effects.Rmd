@@ -63,8 +63,8 @@ plotly::ggplotly(gg, tooltip = c("x", "y", "text")) %>%  layout(legend = list(or
 ```{r, echo=FALSE}
 dat = weights_geo_inc %>% filter(income_cat == "$50,000 to $59,999") %>% mutate(people_represented = round(households_represented*average_hh_size, 2))
 
-g <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`, label = NAME, label2 = households_represented, label3 = average_hh_size, fill = income_cat)) + geom_point() + labs(title = "Monthly Loss of SNAP Benefits per Household per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)") + scale_fill_manual(values="#232D4B")
-gp <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=(`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`)/average_hh_size, label = NAME, label2 = people_represented, fill = income_cat)) + geom_point() + labs(title = "Monthly Loss of SNAP Benefits per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size") + scale_fill_manual(values="#232D4B")
+g <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "Monthly Loss of SNAP Benefits per Household per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars)") + scale_fill_manual(values="#232D4B")
+gp <- ggplot(dat, aes(x=SNAP_eligibility_proportion, y=(`Monthly mean COVID benefit` - `Monthly mean SNAP benefit`)/average_hh_size, label = NAME, label2 = people_represented)) + geom_point(color="#232D4B") + labs(title = "Monthly Loss of SNAP Benefits per Person per Tract", x = "Proportion of Households Eligible for SNAP", y = "Loss of Monthly SNAP Benefit (Dollars) / Average Household Size") + scale_fill_manual(values="#232D4B")
 
 ggplotly(g)
 ```
