@@ -8,18 +8,30 @@ The Supplemental Nutrition Assistance Program (SNAP) is the largest federal nutr
 
 Participants may use SNAP benefits in supermarkets, grocery stores, convenience stores and food retailers to purchase food.
 
-Numbers of the SNAP - 2022:
+<br>
 
-People Participating (thousands):	41,207  
-Households Participating (thousands):	21,612  
-Value of Benefits (million dollars):	113,738  
-Average Monthly Benefit Per Person (dollars):	230.01  
-Average Monthly Benefit Per Household (dollars):	438.56  
-Total Cost (million dollars):	119,242  
+
+
+
+</table>
+<tr>
+    <h3>Numbers of the SNAP - 2022: </h3>
+<h4>
+- People Participating (thousands):	41,207  
+- Households Participating (thousands):	21,612  
+- Value of Benefits (million dollars):	113,738  
+- Average Monthly Benefit Per Person (dollars):	230.01  
+- Average Monthly Benefit Per Household (dollars):	438.56  
+- Total Cost (million dollars):	119,242  
+
+</h4>
+<tr>
+</table>
 
 
 Total cost includes benefits, administrative expenses, and other cost, for example, printing and processing stamps. 
 
+<br>
 
 ## Eligibility
 

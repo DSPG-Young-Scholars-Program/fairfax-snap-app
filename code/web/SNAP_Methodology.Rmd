@@ -1,7 +1,20 @@
 ---
-title: "SNAP Methodology"
-subtitle: "How do we estimate SNAP benefit?"
+title: "Estimation of SNAP benefits "
+#subtitle: "How do we estimate SNAP benefit?"
 ---
+
+ 
+
+
+<div style="margin: auto; width: 100%; text-align: center; border: 2px solid white;">
+<h4><strong>Methodology Summary </strong></h4>
+</div>
+
+
+![SNAP Benefit Calculations](img/snap_benefit_explained.png)
+<br>
+<br>
+
 
 ## What Factors Contribute to SNAP Benefit Estimations?
 
@@ -12,12 +25,11 @@ SNAP eligibility and benefit rules are largely the same across all states except
 
 VA, MD, and DC  all deduct for dependent care, monthly rent/mortgage, and homeowners insurance and taxes. They only differ in terms of utility and phone allowance deductions.   
 
+<br>
+
 ### SNAP Benefit Calculation Approach
 
-In order to calculate estimated SNAP benefit and other statistics shown in the data dictionary below, we follow the methodology used in the [Virginia SNAP Prescreener](https://www.snapscreener.com/screener?state=VA).  
-
-![SNAP Benefit Calculations](img/SNAP_Benefits_Explained.png)
-
+In order to calculate estimated SNAP benefit and other statistics shown in the data dictionary below, we follow the methodology used in the [Virginia SNAP Prescreener](https://www.snapscreener.com/screener?state=VA). 
 
 
 1. We first use a household's monthly income as their **gross monthly income**. 
@@ -36,6 +48,8 @@ Once we have the gross and net monthly incomes, we calculate the estimated SNAP 
 *Our results from the calculations have been cross-referenced with those from the snapscreener website to ensure their validity. For more detailed information on the benefit calculation process, please use the snapscreener link above.*   
 
 
+<br>
+<br>
 
 ### Data Dictionary
 
@@ -53,6 +67,7 @@ Once we have the gross and net monthly incomes, we calculate the estimated SNAP 
 | Households Represented | The amount of households that the statistics for a given tract represent |
 | People Represented | Households Represented divided by Average Household Size: this produces an estimate for the people represented within a tract or income category |
 
+<br>
 
 ## Exploratory Plots
 

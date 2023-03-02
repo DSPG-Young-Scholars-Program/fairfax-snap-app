@@ -1,6 +1,6 @@
 ---
-title: "At-Risk Tracts"
-subtitle: "Which tracts are at-risk?"
+#title: "At-Risk Tracts"
+#subtitle: "Which tracts are at-risk?"
 ---
 
 ```{r, echo=FALSE, warning=FALSE, include=FALSE}
@@ -15,7 +15,8 @@ library(viridis)
 
 weights_geo <- read.csv("img/weights_geo.csv")
 
-census_api_key( Sys.getenv("census_key") )
+#census_api_key( Sys.getenv("census_key") )
+census_api_key("eba406410c653b81d6a795ac4e989221f7bdf302")
 
 geo_census <- get_acs(geography = "tract",
                                   year = 2020,
@@ -40,17 +41,9 @@ weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
 
 ## Average monthly benefit of SNAP in Fairfax County (2020)
 
-```{r, echo=FALSE, warning=FALSE}
-# chloropleth_geo_income <- ggplot(weights_geo, aes(fill = monthly_mean_income, label = NAME, label2 = monthly_mean_SNAP_benefit, label3 = monthly_mean_COVID_benefit, label4 = average_hh_size, geometry=geometry)) +
-#   geom_sf() + scale_fill_viridis(option="magma")
-# 
-# ggplotly(chloropleth_geo_income)
-```
 
 
-
-
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(sf)
 library(leaflet)
 library(dplyr)
@@ -85,8 +78,10 @@ leaflet(weights_geo , options = leafletOptions(attributionControl = FALSE)) %>%
 
 ```
 
+<br>
+<br>
 
-## SNAP Eligibility and average SNAP benefit per month
+## SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit per Household
 
 ```{r, echo=FALSE}
 hp <- c(51059482206, 51059452301, 51059451501)
@@ -94,9 +89,11 @@ highlight_points <- weights_geo %>% filter(geoid %in% hp)
 ```
 
 ```{r, echo=FALSE}
-gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit per Household")
+gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "")
 ggplotly(gg_benefit_eligibility)
 ```
+<br>
+<br>
 
 *Notable Tracts of Concern: 4822.06, 4523.01, 4515.01
 
