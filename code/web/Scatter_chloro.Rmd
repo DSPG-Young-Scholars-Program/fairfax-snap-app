@@ -29,9 +29,16 @@ food_sec_tract_num_plot <- readRDS("img/food_sec_tract_num_plot.RDS")
 
 ```
 
+
+
+```{r, echo=FALSE, warning=FALSE, fig.show='hide',  include=FALSE}
+
 #Proportion of households facing food insecurity in Fairfax county
 
-```{r, echo=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggrepel)
+library(ggmap)
+
 plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
   geom_point() + 
   labs(title = 'Food Insecurity and Number of Households by Census Tracts', 
@@ -45,7 +52,7 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
   geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
   labs(caption = "Dotted line: 75 percentile")
 
-ggplotly(plot_numhh_finsec)
+#ggplotly(plot_numhh_finsec)
 
 c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc, label1 = pumas, label_2 = NAME, geometry = geometry )) +
   geom_sf()
@@ -61,19 +68,23 @@ subplot(
   layout(title = "Proportion of households facing food insecurity")
 ```
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE }
+
+
 c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc,  label1 = pumas, label_2 = NAME, geometry = geometry )) +
-  geom_sf_interactive(aes(data_id = geoid))+
-  theme_void()
+  geom_sf_interactive(aes(data_id = geoid)) + 
+  scale_colour_manual(values=rainbow(4)) +
+  theme_void() + guides(fill=guide_legend(title="Food Insecurity %")) 
   
 
 
 plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
-  geom_point_interactive(color = "black", size = 4, shape = 20, aes(data_id = geoid)) +
+  geom_point_interactive(color = "black", size = 2, shape = 20, aes(data_id = geoid)) +
   scale_fill_distiller(palette = "Blues", direction = 1) + 
-  labs(title = 'Food Insecurity', 
-       subtitle = "Fairfax County, VA", x="Number of Households", 
-       y="Proportion of households facing Food Insecurity") + 
+  labs(title = '', 
+       subtitle = "", 
+       x="Number of Households", 
+       y="Food Insecurity - %") + 
   scale_colour_viridis_d() +
   theme(legend.text=element_text(size=15)) +
   theme(legend.position = "bottom") +
@@ -82,6 +93,75 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
   geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
   labs(caption = "Dotted line: 75 percentile")
 
-girafe(ggobj = c + plot_numhh_finsec) %>%
-  girafe_options(opts_hover(css = "fill:cyan;"))
+girafe(ggobj =  plot_numhh_finsec + c) %>%
+  girafe_options(opts_hover(css = "fill:cyan;")) 
+
+```
+
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#NEW
+# library(tidyverse)
+# library(acs)
+# library(tidycensus)
+# library(tigris)
+# library(plotly)
+# library(shiny)
+# library(ggplot2)
+# library(viridis)
+# 
+# weights_geo <- read.csv("img/weights_geo.csv")
+# 
+# # census_api_key( Sys.getenv("census_key") )
+# census_api_key( "eba406410c653b81d6a795ac4e989221f7bdf302" )
+# 
+# 
+# 
+# geo_census <- get_acs(geography = "tract",
+#                                   year = 2020,
+#                                   variables = c(Total = "B22003_001"
+#                                   ),
+#                                   state = 51, # VA
+#                                   county = 059,
+#                                   survey = "acs5",
+#                                   geometry = TRUE)
+# 
+# geo_census$GEOID <- as.numeric(geo_census$GEOID)
+# fairfax <- geo_census[, c(1, 2, 6)]
+# 
+# weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
+# 
+# 
+# library(sf)
+# library(leaflet)
+# library(dplyr)
+# library(readr)
+# 
+# #format st
+# weights_geo <- st_as_sf(weights_geo, crs = 4326) # %>% filter(tot_hh > 10)
+# 
+# #palette colors
+# pal <- colorBin("viridis", weights_geo$monthly_mean_SNAP_benefit)
+# 
+# #map leaflet
+# 
+# pmap <- leaflet(weights_geo , options = leafletOptions(attributionControl = FALSE)) %>%
+#   setView(lng = -77.2464825271027, lat = 38.84619925123701, zoom = 10) %>%  
+#   addTiles() %>%
+#   addScaleBar("bottomleft") %>%
+#   addControl("Average monthly benefit of SNAP", "topright") %>%
+#   addLegend("bottomright", pal, weights_geo$monthly_mean_SNAP_benefit, opacity = .7) %>%
+#   addPolygons(
+#     fillColor = pal(weights_geo$monthly_mean_SNAP_benefit), fillOpacity = .7, weight = 1, color = "#000",
+#     highlightOptions = highlightOptions(color = "#fff"),
+#     label = paste0(
+#       "Census tract: ", weights_geo$NAME, "<br/>"
+#     )     %>%
+#       lapply(htmltools::HTML)
+#   ) 
+# 
+# pmap
+
+
 ```
