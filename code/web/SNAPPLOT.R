@@ -1,3 +1,9 @@
+##Codes for various plots which explains the evolution of snap amount 
+## and number households in FAIRFAX county over time (2005 - 2023)
+
+
+
+###Average Snap amount in fairfax county
 library(plotly)
 library(readxl)
 
@@ -9,7 +15,7 @@ library(readxl)
  data$Month <- as.Date(data$Month, format='%m/%d/%Y')
  
 
- plot <- plot_ly(data, x = ~Month, y = ~All.SNAP.Avg.Per.Household, type = "scatter", mode = "lines",
+ plot1 <- plot_ly(data, x = ~Month, y = ~All.SNAP.Avg.Per.Household, type = "scatter", mode = "lines",
                  line = list(color = "#1F77B4", width = 3),
                  hovertemplate = "<b>Month:</b> %{x|%Y-%m}<br><b>Snap Amount:</b> %{y:$,.2f}<extra></extra>") %>%
    layout(title = "<b>SNAP Amount in Fairfax County Over Time</b>",
@@ -27,7 +33,7 @@ library(readxl)
              hoverinfo = "skip")
  
  # Display the plot
- plot
+ plot1
 
 #######Households number
  library(plotly)
@@ -45,7 +51,7 @@ library(readxl)
  data$Month <- factor(data$Month, levels = unique(sort(data$Month)))
  
  # Create an interactive Plotly plot
- plot <- plot_ly(data, x = ~Month, y = ~Avg.Households.Receiving.Snap, type = "scatter", mode = "lines",
+ plot2 <- plot_ly(data, x = ~Month, y = ~Avg.Households.Receiving.Snap, type = "scatter", mode = "lines",
                  line = list(color = "#1F77B4", width = 3),
                  hovertemplate = "<b>Month:</b> %{x|%Y-%m}<br><b>Avg. Households Receiving Snap:</b> %{y}<extra></extra>") %>%
    layout(title = "<b>Average Households Receiving SNAP in Fairfax County Over Time</b>",
@@ -56,10 +62,57 @@ library(readxl)
           showlegend = FALSE)
  
  # Display the plot
- plot
+ plot2
  
  
+ subplot(plot1, plot2, nrows = 1)
+ 
+ ###Combined plot of both snap amount and number of households
+ 
+ 
+ library(plotly)
+ library(tidyverse)
+ 
+ data <- read_excel('~/Desktop/Fairfax_SNAP_2005_2023_dataset.xlsx')
+ data <- data.frame(data)
+ 
+ plot <- data %>%
+   plot_ly(x = ~Month) %>%
+   add_lines(y = ~HOUSEHOLDS.TOTAL, name = "Total Households") %>%
+   add_lines(y = ~All.SNAP.Avg.Per.Household, name = "Avg. Households Receiving SNAP") %>%
+   layout(title = "Number of Households and Dollar Amount Over Time",
+          xaxis = list(title = "Month"),
+          yaxis = list(title = "Number of Households / Dollar Amount",
+                       range = c(0, 30000)))
 
- 
- 
+plot
+
+
+
+###subplot explaining the evolution 
+
+
+
+library(plotly)
+library(tidyverse)
+
+data <- read_excel('~/Desktop/Fairfax_SNAP_2005_2023_dataset.xlsx')
+data <- data.frame(data)
+
+
+# plot for total households
+plot1 <- data %>%
+  plot_ly(x = ~Month, y = ~HOUSEHOLDS.TOTAL, type = "scatter", mode = "lines", name = "Total Households") %>%
+  layout(yaxis = list(title = "Total Households"))
+
+# plot for avg households receiving SNAP
+plot2 <- data %>%
+  plot_ly(x = ~Month, y = ~All.SNAP.Avg.Per.Household, type = "scatter", mode = "lines", name = "Avg SNAP amount received by Households") %>%
+  layout(yaxis = list(title = "Avg. Households Receiving SNAP"))
+
+# combine the plots into a single subplot
+subplot(plot1, plot2, nrows = 1)
+
+
+
  
