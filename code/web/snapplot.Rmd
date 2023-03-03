@@ -17,7 +17,7 @@ library(readxl)
 #Average Snap amount received by households in fairfax county
 
 ```{r,echo=FALSE, warning=FALSE }
-data <- read_excel('~/Desktop/Fairfax_SNAP_2005_2023_dataset.xlsx')
+data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
 data <- data.frame(data)
 data$Month <- as.Date(data$Month, format='%m/%d/%Y')
 
@@ -47,7 +47,7 @@ plot1
 #Number of households receiving snap in fairfax county
 
 ```{r,echo=FALSE, warning=FALSE }
-data <- read_excel('~/Desktop/Fairfax_SNAP_2005_2023_dataset.xlsx')
+data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
  data <- data.frame(data)
  # Aggregate the data by month/year and calculate the average households receiving snap
  data$Month <- as.Date(data$Month, format = "%Y-%m-%d")
@@ -90,7 +90,7 @@ plot2
 ```
 
 ```{r,echo=FALSE, warning=FALSE }
-data <- read_excel('~/Desktop/Fairfax_SNAP_2005_2023_dataset.xlsx')
+data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
  data <- data.frame(data)
  
 plot <- data %>%
@@ -112,7 +112,7 @@ plot
 library(plotly)
 library(tidyverse)
 
-data <- read_excel('~/Desktop/Fairfax_SNAP_2005_2023_dataset.xlsx')
+data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
 data <- data.frame(data)
 
 
