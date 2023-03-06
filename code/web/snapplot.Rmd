@@ -2,6 +2,9 @@
 title: "Evolution of  households and Snap amount received in Fairfax County year 2005
   - 2023"
 subtitle: 'Source for Datasets: Virginia Department of Social Services'
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -58,10 +61,10 @@ data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_datas
 plot2 <- plot_ly(data, x = ~Month, y = ~Avg.Households.Receiving.Snap, type = "scatter", mode = "lines",
                  line = list(color = "#1F77B4", width = 3),
                  hovertemplate = "<b>Month:</b> %{x|%Y-%m}<br><b>Avg no of Households Receiving Snap:</b> %{y}<extra></extra>") %>%
-  layout(title = "<b>Average Number of Households Receiving SNAP in Fairfax County </b>",
+  layout(title = "<b> Number of Households Receiving SNAP </b>",
                   titlefont = list(size = 24),
          xaxis = list(title = "<b>Month</b>", tickformat = "%b %Y", showspikes = TRUE, spikemode = "across", spikethickness = 1),
-         yaxis = list(title = "<b>Avg number of Households Receiving Snap</b>", showspikes = TRUE, spikemode = "across", spikethickness = 1, tickformat = ".0f"),
+         yaxis = list(title = "<b>Number of Households Receiving Snap</b>", showspikes = TRUE, spikemode = "across", spikethickness = 1, tickformat = ".0f"),
          hovermode = "x unified",
          hoverlabel = list(bgcolor = "#F7F7F7", font = list(size = 14)),
          showlegend = FALSE,
