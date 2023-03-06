@@ -30,6 +30,8 @@ navbar:
         href: else_effects.html
     - text: "Tract Identifier"
       href: Scatter_chloro.html
+    - text: "Time series-SNAP"
+      href: snapplot.html
     - text: ""
       icon: fa-github
       href: "https://github.com/uva-bi-sdad"

@@ -168,6 +168,9 @@ plot2 <- data %>%
 
 # combine the plots into a single subplot
 subplot(plot1, plot2, nrows = 1, margin = 0.1) %>%
-    layout(width = 1100)
+    layout(width = 1000) %>% layout(legend = list(orientation = "h", 
+                                     xanchor = "center",
+                                     x = 0.5,
+                                     y = -0.2) ) 
 
 ```
