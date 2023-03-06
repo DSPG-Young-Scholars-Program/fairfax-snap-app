@@ -1,7 +1,6 @@
 ---
-title: "Evolution of  households and Snap amount received in Fairfax County year 2005
-  - 2023"
-subtitle: 'Source for Datasets: Virginia Department of Social Services'
+title: "Supplemental Nutrition Assistance Program (SNAP) in Fairfax County"
+subtitle: 'Source: Virginia Department of Social Services'
 output:
   html_document:
     df_print: paged
@@ -11,129 +10,24 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 </br>
-
-
-```{r, echo=FALSE, warning=FALSE,include=FALSE }
-
-library(plotly)
-library(readxl)
-data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
-data <- data.frame(data)
-data$Month <- as.Date(data$Month, format='%m/%d/%Y')
-
-```
-
-```{r, echo=FALSE, warning=FALSE}
-plot1 <- plot_ly(data, x = ~Month, y = ~All.SNAP.Avg.Per.Household, type = "scatter", mode = "lines",
-                 line = list(color = "#1F77B4", width = 3),
-                 hovertemplate = "<b>Month:</b> %{x|%Y-%m}<br><b>Snap Amount:</b> %{y:$,.2f}<extra></extra>") %>%
-  layout(title = "<b>SNAP Amount in Fairfax County Over Time</b>",
-                  titlefont = list(size = 24),
-         xaxis = list(title = "<b>Year</b>", tickformat = "%b %Y", showspikes = TRUE, spikemode = "across", spikethickness = 1),
-         yaxis = list(title = "<b>Snap Amount</b>", tickprefix = "$", showspikes = TRUE, spikemode = "across", spikethickness = 1),
-         hovermode = "x unified",
-         hoverlabel = list(bgcolor = "#F7F7F7", font = list(size = 14)),
-         showlegend = FALSE,
-         margin = list(l = 50, r = 50, t = 100, b = 50)) %>%
-
-  add_trace(name = "", x = c(data$Month[1], data$Month[1]), y = c(0, data$All.SNAP.Avg.Per.Household[1]),
-            type = "scatter", mode = "lines", line = list(color = "black", dash = "dash"),
-            hoverinfo = "skip") %>%
-  add_trace(name = "", x = c(data$Month[1], data$Month[1]), y = c(data$All.SNAP.Avg.Per.Household[1], data$All.SNAP.Avg.Per.Household[1]),
-            type = "scatter", mode = "lines", line = list(color = "black", dash = "dash"),
-            hoverinfo = "skip")
-plot1
-```
 </br>
 
-```{r,echo=FALSE, warning=FALSE }
-data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
- data <- data.frame(data)
- # Aggregate the data by month/year and calculate the average households receiving snap
- data$Month <- as.Date(data$Month, format = "%Y-%m-%d")
- data <- aggregate(HOUSEHOLDS.TOTAL ~ format(Month, "%Y-%m"), data, mean)
- names(data) <- c("Month", "Avg.Households.Receiving.Snap")
- 
- # Convert the Month column to a factor with the levels ordered by date
- data$Month <- factor(data$Month, levels = unique(sort(data$Month)))
- 
- # Create an interactive Plotly plot
-plot2 <- plot_ly(data, x = ~Month, y = ~Avg.Households.Receiving.Snap, type = "scatter", mode = "lines",
-                 line = list(color = "#1F77B4", width = 3),
-                 hovertemplate = "<b>Month:</b> %{x|%Y-%m}<br><b>Avg no of Households Receiving Snap:</b> %{y}<extra></extra>") %>%
-  layout(title = "<b> Number of Households Receiving SNAP </b>",
-                  titlefont = list(size = 24),
-         xaxis = list(title = "<b>Month</b>", tickformat = "%b %Y", showspikes = TRUE, spikemode = "across", spikethickness = 1),
-         yaxis = list(title = "<b>Number of Households Receiving Snap</b>", showspikes = TRUE, spikemode = "across", spikethickness = 1, tickformat = ".0f"),
-         hovermode = "x unified",
-         hoverlabel = list(bgcolor = "#F7F7F7", font = list(size = 14)),
-         showlegend = FALSE,
-        margin = list(l = 50, r = 50, t = 100, b = 50))
-
-
-# Display the plot
-plot2
-
-```
-</br>
-
-**<span style="font-size:20pt">Subplot of plot1 and plot2**
-</br>
-
-```{r,echo=FALSE, warning=FALSE}
-# Subplot of plot1 and plot2 with bold title
-subplot(plot1, plot2, nrows = 1, margin = 0.2) %>% 
-  layout(title = "Total Households and Avg. SNAP Amount Over Time", 
-         titlefont = list(size = 24, color = "black", family = "sans-serif", 
-                          weight = "bold"))
-
-```
-</br>
-
-**<span style="font-size:20pt">Combining  amount received and number of households in a single plot**
+**<span style="font-size:15pt">Number of households receiving SNAP and    Average SNAP amount per household per month**
 
 </br>
-
-```{r,echo=FALSE, warning=FALSE, message=FALSE}
- library(plotly)
- library(tidyverse)
-
-data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
-data <- data.frame(data)
- 
-plot <- data %>%
-  plot_ly(x = ~Month) %>%
-  add_lines(y = ~HOUSEHOLDS.TOTAL, name = "Number of Households") %>%
-  add_lines(y = ~All.SNAP.Avg.Per.Household, name = "Avg SNAP amount") %>%
-  layout(title = "Number of Households and Dollar Amount Over Time",
-        titlefont = list(size = 24),
-         xaxis = list(title = "Year"),
-         yaxis = list(title = "Number of Households / Dollar Amount", range = c(0, 30000), tickformat = ".0f"),
-                margin = list(l = 50, r = 50, t = 100, b = 50),
-        hoverlabel = list(
-          bgcolor = "white",
-          font = list(size = 16),
-          namelength = -1
-        )
-) 
-  
-plot
-
-
-```
 </br>
-
-**<span style="font-size:20pt">Subplot explaining the evolution of housheolds and amount received over time**
-
-</br>
-
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE,include=FALSE}
 library(plotly)
 library(tidyverse)
+library(readxl)
 
 data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
 data <- data.frame(data)
 
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
 
 # plot for total households
 plot1 <- data %>%
@@ -150,27 +44,50 @@ plot1 <- data %>%
   ) %>%
   layout(
     yaxis = list(
-      title = "Total Households",
-      tickformat = ",g"
-    )
+      title = " ",
+      tickformat = ".0f"
+    ),
+    xaxis = list(
+      rangeslider = list(
+        autorange = TRUE,
+        range = c(as.Date("2005-01-01"), as.Date("2023-12-01")),
+        thickness = 0.1,
+        bgcolor = "#F5F6F9"
+      )
+    ),
+    title = "Number of households receiving SNAP"
   )
 
 
 # plot for avg households receiving SNAP
 plot2 <- data %>%
-  plot_ly(x = ~Month, y = ~All.SNAP.Avg.Per.Household, type = "scatter", mode = "lines", name = "Avg SNAP amount received by households") %>%
-  layout(yaxis = list(title = "Avg. Households Receiving SNAP"),hoverlabel = list(
-          bgcolor = "white",
-          font = list(size = 16),
-          namelength = -1
-        ))
+  plot_ly(x = ~Month,
+          y = ~All.SNAP.Avg.Per.Household, 
+          type = "scatter", mode = "lines",
+          name = "Avg SNAP amount received by households",
+          hovertemplate = paste("<b>Month:</b> %{x}<br>",
+          "<b>Average SNAP Amount:</b> %{y:.2f}<br>", "<extra></extra>")) %>%
+  layout(
+    yaxis = list(
+      title = " ",
+      tickformat = ".0f"
+    ),
+    xaxis = list(
+      rangeslider = list(
+        autorange = TRUE,
+        range = c(as.Date("2005-01-01"), as.Date("2023-12-01")),
+        thickness = 0.1,
+        bgcolor = "#F5F6F9"
+      )
+    ),
+    title = " "
+  )
 
 
-# combine the plots into a single subplot
-subplot(plot1, plot2, nrows = 1, margin = 0.1) %>%
-    layout(width = 1000) %>% layout(legend = list(orientation = "h", 
-                                     xanchor = "center",
-                                     x = 0.5,
-                                     y = -0.2) ) 
-
+subplot(
+  plot1,plot2, margin = 0.1) %>%  layout(width = 1000) %>% layout(legend = list(orientation = "h", 
+                           xanchor = "center",
+                           x = 0.5,
+                           y = -0.2) ) 
+  
 ```
