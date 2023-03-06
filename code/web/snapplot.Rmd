@@ -44,7 +44,7 @@ plot1 <- data %>%
   ) %>%
   layout(
     yaxis = list(
-      title = " ",
+      title = "Number of Households ",
       tickformat = ".0f"
     ),
     xaxis = list(
@@ -69,7 +69,7 @@ plot2 <- data %>%
           "<b>Average SNAP Amount:</b> %{y:.2f}<br>", "<extra></extra>")) %>%
   layout(
     yaxis = list(
-      title = " ",
+      title = "Snap Amount ",
       tickformat = ".0f"
     ),
     xaxis = list(
