@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </br>
 </br>
 
-**<span style="font-size:15pt">Number of households receiving SNAP and    Average SNAP amount per household per month**
+**<span style="font-size:15pt">Number of households, persons receiving SNAP and    Average SNAP amount per household per month**
 
 </br>
 </br>
@@ -89,5 +89,43 @@ subplot(
                            xanchor = "center",
                            x = 0.5,
                            y = -0.2) ) 
+  
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+
+# plot for number of persons
+
+ploth <- data %>%
+  plot_ly(
+    x = ~Month,
+    y = ~PERSONS.TOTAL,
+    type = "scatter",
+    mode = "lines",
+    name = "Number of Persons",
+    hovertemplate = paste(
+      "<b>Month:</b> %{x}<br>",
+      "<b>Number of Persons:</b> %{y:.f}<br>"
+    )
+  ) %>%
+  layout(
+    yaxis = list(
+      title = "Number of Persons ",
+      tickformat = ".0f"
+    ),
+    xaxis = list(
+      rangeslider = list(
+        autorange = TRUE,
+        range = c(as.Date("2005-01-01"), as.Date("2023-12-01")),
+        thickness = 0.1,
+        bgcolor = "#F5F6F9"
+      )
+    ),
+    title = "Number of Persons receiving SNAP"
+  )
+
+
+ploth
   
 ```
