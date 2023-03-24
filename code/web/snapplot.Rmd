@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 </br>
 </br>
 
-**<span style="font-size:15pt">Number of households, persons receiving SNAP and    Average SNAP amount per household per month**
+**<span style="font-size:15pt">Number of households receiving SNAP and    Average SNAP amount per household per month**
 
 </br>
 </br>
@@ -91,13 +91,33 @@ subplot(
                            y = -0.2) ) 
   
 ```
+</br>
+</br>
+
+**<span style="font-size:15pt">Number of persons receiving SNAP and   Average SNAP amount per person per month**
+
+</br>
+</br>
+
+
+</br>
+</br>
+```{r, echo=FALSE, warning=FALSE,include=FALSE}
+library(plotly)
+library(tidyverse)
+library(readxl)
+
+data1 <- read_excel("~/fairfax-snap-app/code/web/img/fairfax_SNAP_with_persons_avg.xlsx")
+data1 <- data.frame(data1)
+
+```
 
 
 ```{r, echo=FALSE, warning=FALSE}
 
 # plot for number of persons
 
-ploth <- data %>%
+plotp1 <- data1 %>%
   plot_ly(
     x = ~Month,
     y = ~PERSONS.TOTAL,
@@ -126,6 +146,34 @@ ploth <- data %>%
   )
 
 
-ploth
-  
+# plot for avg amount by persons receiving SNAP
+plotp2 <- data1 %>%
+  plot_ly(x = ~Month,
+          y = ~Snap_per_person, 
+          type = "scatter", mode = "lines",
+          name = "Avg SNAP amount received by persons",
+          hovertemplate = paste("<b>Month:</b> %{x}<br>",
+          "<b>Average SNAP Amount:</b> %{y:.2f}<br>", "<extra></extra>")) %>%
+  layout(
+    yaxis = list(
+      title = "Snap Amount ",
+      tickformat = ".0f"
+    ),
+    xaxis = list(
+      rangeslider = list(
+        autorange = TRUE,
+        range = c(as.Date("2005-01-01"), as.Date("2023-12-01")),
+        thickness = 0.1,
+        bgcolor = "#F5F6F9"
+      )
+    ),
+    title = " "
+  )
+
+ subplot(
+  plotp1,plotp2, margin = 0.1) %>%  layout(width = 1000) %>% layout(legend = list(orientation = "h", 
+                           xanchor = "center",
+                           x = 0.5,
+                           y = -0.2) ) 
+   
 ```
