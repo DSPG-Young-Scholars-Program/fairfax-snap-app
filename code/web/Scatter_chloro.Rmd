@@ -47,10 +47,7 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
   scale_colour_viridis_d() +
   theme(legend.text=element_text(size=15)) +
   theme(legend.position = "bottom") +
-  guides(fill = guide_colorbar(title.position = "top"))+
-  geom_hline(yintercept= quantile(food_sec_tract_num_plot$insecure_pc, 0.75, na.rm = TRUE), linetype="dashed", color = "red") +
-  geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
-  labs(caption = "Dotted line: 75 percentile")
+  guides(fill = guide_colorbar(title.position = "top"))
 
 #ggplotly(plot_numhh_finsec)
 
@@ -88,10 +85,8 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
   scale_colour_viridis_d() +
   theme(legend.text=element_text(size=15)) +
   theme(legend.position = "bottom") +
-  guides(fill = guide_colorbar(title.position = "top"))+
-  geom_hline(yintercept= quantile(food_sec_tract_num_plot$insecure_pc, 0.75, na.rm = TRUE), linetype="dashed", color = "red") +
-  geom_vline(xintercept= quantile(food_sec_tract_num_plot$tot_hh, 0.75), linetype="dashed", color = "red") + 
-  labs(caption = "Dotted line: 75 percentile")
+  guides(fill = guide_colorbar(title.position = "top"))
+  
 
 girafe(ggobj =  plot_numhh_finsec + c) %>%
   girafe_options(opts_hover(css = "fill:cyan;")) 
