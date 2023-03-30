@@ -94,11 +94,16 @@ ggplotly(gg_benefit_eligibility)
 ```
 
 <br>
-<br>
 
 *Notable Tracts of Concern: 4822.06, 4523.01, 4515.01
+
+<br>
 
 ```{r, echo=FALSE}
 gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit / average_hh_size, label = NAME, label2 = households_represented)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit per Person", x = "Proportion of Households Eligible for SNAP", y = "Monthly Mean SNAP Benefit / Average Household Size") + geom_point(data=highlight_points, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit / average_hh_size), color="#F84C1E", size=2)
 ggplotly(gg_benefit_eligibility)
 ```
+
+<br>
+
+We made note of the three tracts shown above because they stand out as tracts that have a similar proportion of SNAP-eligible households to other at-risk tracts, but are not receiving as much predicted monthly SNAP benefit as these other tracts.

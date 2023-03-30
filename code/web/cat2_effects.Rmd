@@ -90,6 +90,10 @@ p
 
 ```
 
+We see the distributions of both COVID SNAP and normal SNAP benefits for households making between 35,000 and 50,000 dollars a year. We find that the mean Monthly Average Benefit for this income level drops by ~$133 after the policy change.
+
+<br>
+
 ## SNAP Eligibility vs SNAP Loss at Household and Person Levels ($35,000 to $49,999)
 
 ```{r, echo=FALSE}

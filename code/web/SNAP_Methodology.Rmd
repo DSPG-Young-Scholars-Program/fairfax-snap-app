@@ -108,7 +108,8 @@ ggplotly(gg_benefit_eligibility)
 
 ![Sources of Information](img/sources_info_snap_app.png)
 
-
+<br>
+<br>
 
 ## Components of Cost of Living and sources of data
 

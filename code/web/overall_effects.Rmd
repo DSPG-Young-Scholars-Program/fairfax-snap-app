@@ -89,12 +89,23 @@ ggplotly(g2) %>% layout(legend = list(orientation = "h",
                                      xanchor = "center",
                                      x = 0.5,
                                      y = -0.2) ) 
+```
+
+We see the distributions of households at the three income levels shown above, with a mean monthly average COVID SNAP benefit of ~$353 for households making fewer than 60,000 dollars a year.
+
+<br>
+
+```{r, echo=FALSE, warning=FALSE}
 ggplotly(g1) %>% layout(legend = list(orientation = "h", 
                                      xanchor = "center",
                                      x = 0.5,
                                      y = -0.2) ) 
 
 ```
+
+We see the distributions of households at the three income levels shown above, with a mean monthly average SNAP benefit of ~$237 for households making fewer than 60,000 dollars a year after the policy change.
+
+<br>
 
 ## Distributions of COVID-SNAP Changes at Income Levels
 

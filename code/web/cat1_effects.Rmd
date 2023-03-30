@@ -90,6 +90,10 @@ p
 
 ```
 
+We see the distributions of both COVID SNAP and normal SNAP benefits for households making fewer than 35,000 dollars a year. We find that the mean Monthly Average Benefit for this income level drops by ~$130 after the policy change.
+
+<br>
+
 ## SNAP Eligibility vs SNAP Loss at Household and Person Levels (Less than $35,000)
 
 ```{r, echo=FALSE}
@@ -132,7 +136,7 @@ at_risk_p = dat %>% filter(households_represented > 5) %>% mutate(`Monthly Benef
       cell_fill(color = "#F84C1E")
     ),
     locations = cells_body(
-      rows = c(1, 2, 3))
+      rows = c(1, 3, 4))
   ) %>% 
   fmt_number(
     columns = 2:5,
