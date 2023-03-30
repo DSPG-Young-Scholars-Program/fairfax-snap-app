@@ -21,7 +21,7 @@ library(plotly)
 library(tidyverse)
 library(readxl)
 
-data <- read_excel("~/fairfax-snap-app/code/web/img/Fairfax_SNAP_2005_2023_dataset.xlsx")
+data <- read_excel("img/Fairfax_SNAP_2005_2023_dataset.xlsx")
 data <- data.frame(data)
 
 ```
@@ -107,7 +107,7 @@ library(plotly)
 library(tidyverse)
 library(readxl)
 
-data1 <- read_excel("~/fairfax-snap-app/code/web/img/fairfax_SNAP_with_persons_avg.xlsx")
+data1 <- read_excel("img/fairfax_SNAP_with_persons_avg.xlsx")
 data1 <- data.frame(data1)
 
 ```
