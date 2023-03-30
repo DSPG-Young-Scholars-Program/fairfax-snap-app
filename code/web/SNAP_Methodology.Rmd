@@ -1,6 +1,5 @@
 ---
-title: "Estimation of SNAP benefits "
-#subtitle: "How do we estimate SNAP benefit?"
+title: 'Estimation of SNAP benefits '
 ---
 
  
@@ -104,3 +103,16 @@ weights_geo <- weights_geo %>% left_join(fairfax, by = c("geoid"="GEOID"))
 gg_benefit_eligibility <- ggplot(weights_geo, aes(x=SNAP_eligibility_proportion, y=monthly_mean_SNAP_benefit, label = NAME, label2 = households_represented, label3 = average_hh_size)) + geom_point(color="#232D4B") + labs(title = "SNAP Eligibility Proportion vs Monthly Mean SNAP Benefit", y = "Monthly Mean SNAP Benefit", x = "SNAP Eligibility Proportion")
 ggplotly(gg_benefit_eligibility)
 ```
+
+## Sources of data
+
+![Sources of Information](img/sources_info_snap_app.png)
+
+
+
+## Components of Cost of Living and sources of data
+
+![Components Cost of Living](img/components_col_sources.png)
+
+
+
