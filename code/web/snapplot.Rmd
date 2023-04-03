@@ -20,15 +20,12 @@ knitr::opts_chunk$set(echo = TRUE)
 library(plotly)
 library(tidyverse)
 library(readxl)
-
 data <- read_excel("img/Fairfax_SNAP_2005_2023_dataset.xlsx")
 data <- data.frame(data)
-
 ```
 
 
 ```{r, echo=FALSE, warning=FALSE}
-
 # plot for total households
 plot1 <- data %>%
   plot_ly(
@@ -57,8 +54,6 @@ plot1 <- data %>%
     ),
     title = "Number of households receiving SNAP"
   )
-
-
 # plot for avg households receiving SNAP
 plot2 <- data %>%
   plot_ly(x = ~Month,
@@ -82,8 +77,6 @@ plot2 <- data %>%
     ),
     title = " "
   )
-
-
 subplot(
   plot1,plot2, margin = 0.1) %>%  layout(width = 1000) %>% layout(legend = list(orientation = "h", 
                            xanchor = "center",
@@ -106,17 +99,13 @@ subplot(
 library(plotly)
 library(tidyverse)
 library(readxl)
-
 data1 <- read_excel("img/fairfax_SNAP_with_persons_avg.xlsx")
 data1 <- data.frame(data1)
-
 ```
 
 
 ```{r, echo=FALSE, warning=FALSE}
-
 # plot for number of persons
-
 plotp1 <- data1 %>%
   plot_ly(
     x = ~Month,
@@ -144,8 +133,6 @@ plotp1 <- data1 %>%
     ),
     title = "Number of Persons receiving SNAP"
   )
-
-
 # plot for avg amount by persons receiving SNAP
 plotp2 <- data1 %>%
   plot_ly(x = ~Month,
@@ -169,7 +156,6 @@ plotp2 <- data1 %>%
     ),
     title = " "
   )
-
  subplot(
   plotp1,plotp2, margin = 0.1) %>%  layout(width = 1000) %>% layout(legend = list(orientation = "h", 
                            xanchor = "center",

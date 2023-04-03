@@ -26,19 +26,15 @@ library(ggupset)
 
 ```{r, echo=FALSE, warning=FALSE }
 food_sec_tract_num_plot <- readRDS("img/food_sec_tract_num_plot.RDS")
-
 ```
 
 
 
 ```{r, echo=FALSE, warning=FALSE, fig.show='hide',  include=FALSE}
-
 #Proportion of households facing food insecurity in Fairfax county
-
 library(tidyverse)
 library(ggrepel)
 library(ggmap)
-
 plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
   geom_point() + 
   labs(title = 'Food Insecurity and Number of Households by Census Tracts', 
@@ -48,13 +44,10 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
   theme(legend.text=element_text(size=15)) +
   theme(legend.position = "bottom") +
   guides(fill = guide_colorbar(title.position = "top"))
-
 #ggplotly(plot_numhh_finsec)
-
 c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc, label1 = pumas, label_2 = NAME, geometry = geometry )) +
   geom_sf()
 ggplotly(c)
-
 subplot(
   plotly_build(ggplotly(c)) %>%
     layout(title = ""),
@@ -66,15 +59,11 @@ subplot(
 ```
 
 ```{r, echo=FALSE, warning=FALSE }
-
-
 c <- ggplot(food_sec_tract_num_plot, aes(fill = insecure_pc,  label1 = pumas, label_2 = NAME, geometry = geometry )) +
   geom_sf_interactive(aes(data_id = geoid)) + 
   scale_colour_manual(values=rainbow(4)) +
   theme_void() + guides(fill=guide_legend(title="Food Insecurity %")) 
   
-
-
 plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, colour = pumas, text = NAME)) + 
   geom_point_interactive(color = "black", size = 2, shape = 20, aes(data_id = geoid)) +
   scale_fill_distiller(palette = "Blues", direction = 1) + 
@@ -87,10 +76,8 @@ plot_numhh_finsec <- ggplot(food_sec_tract_num_plot, aes(tot_hh, insecure_pc, co
   theme(legend.position = "bottom") +
   guides(fill = guide_colorbar(title.position = "top"))
   
-
 girafe(ggobj =  plot_numhh_finsec + c) %>%
   girafe_options(opts_hover(css = "fill:cyan;")) 
-
 ```
 
 
@@ -157,6 +144,4 @@ girafe(ggobj =  plot_numhh_finsec + c) %>%
 #   ) 
 # 
 # pmap
-
-
 ```

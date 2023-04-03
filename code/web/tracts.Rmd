@@ -63,6 +63,7 @@ leaflet(weights_geo , options = leafletOptions(attributionControl = FALSE)) %>%
   addScaleBar("bottomleft") %>%
   addControl("Average monthly benefit of SNAP", "topright") %>%
   addLegend("bottomright", pal, weights_geo$monthly_mean_SNAP_benefit, opacity = .7) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
   addPolygons(
     fillColor = pal(weights_geo$monthly_mean_SNAP_benefit), fillOpacity = .7, weight = 1, color = "#000",
     highlightOptions = highlightOptions(color = "#fff"),
